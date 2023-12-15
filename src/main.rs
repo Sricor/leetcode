@@ -40,6 +40,27 @@ pub fn is_palindrome(x: i32) -> bool {
     }
 }
 
+// https://leetcode.cn/problems/3sum
+// 15, 32 ms, 3.86 MB
+pub fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
+    let mut ret = Vec::new();
+    nums.sort_unstable();
+    for i in 0..nums.len() {
+        if nums[i] > 0 { break; }
+        if i > 0 && nums[i] == nums[i - 1] { continue; }
+        let (mut l, mut r) = (i + 1, nums.len() - 1);
+        while l < r {
+            let sum = nums[i] + nums[l] + nums[r];
+            if sum == 0 {
+                ret.push(vec![nums[i], nums[l], nums[r]]);
+                while r < nums.len() - 1 && nums[r] == nums[r - 1] { r -= 1; }
+                while l < nums.len() - 1 && nums[l] == nums[l + 1] { l += 1; }
+            }
+            if sum > 0 { r -= 1; } else { l += 1; }
+        }
+    }
+    ret
+}
 
 // https://leetcode.cn/problems/remove-duplicates-from-sorted-array/
 // 26, 0 ms, 2.20 MB
@@ -69,9 +90,24 @@ pub fn merge(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
 }
 
 // https://leetcode.cn/problems/pascals-triangle/
-// 118,
-// pub fn generate(num_rows: i32) -> Vec<Vec<i32>> {
-// }
+// 118, 0 ms, 2.04 MB
+pub fn generate(num_rows: i32) -> Vec<Vec<i32>> {
+    let mut ans = Vec::new();
+    if num_rows == 0 {
+        return ans
+    }
+    ans.push(vec![1]);
+    for index in 1..num_rows {
+        let mut array = Vec::new();
+        array.resize(index as usize +1, 1 as i32);
+        array[index as usize] = 1;
+        for j in 1..index {
+            array[j as usize] = ans[index as usize-1][j as usize-1] + ans[index as usize-1][j as usize];
+        }
+        ans.push(array);
+    }
+    return ans;
+}
 
 #[cfg(test)]
 mod tests {
@@ -99,6 +135,16 @@ mod tests {
         assert_eq!(is_palindrome(121), true);
         assert_eq!(is_palindrome(-121), false);
         assert_eq!(is_palindrome(10), false);
+    }
+
+    #[test]
+    fn test_three_sum() {
+        assert_eq!(
+            three_sum(vec![-1, 0, 1, 2, -1, -4]),
+            vec![[-1, -1, 2], [-1, 0, 1]]
+        );
+        // assert_eq!(three_sum(vec![0, 1, 1]), vec![vec![]]);
+        assert_eq!(three_sum(vec![0, 0, 0]), vec![[0, 0, 0]]);
     }
 
     #[test]
@@ -130,9 +176,17 @@ mod tests {
         assert_eq!(vec1, vec![1]);
     }
 
-    // #[test]
-    // fn test_generate() {
-    // }
+    #[test]
+    fn test_generate() {
+        assert_eq!(generate(2), vec![vec![1], vec![1, 1]]);
+        assert_eq!(generate(5), vec![
+            vec![1],
+            vec![1,1],
+            vec![1,2,1],
+            vec![1,3,3,1],
+            vec![1,4,6,4,1]
+        ]);
+    }
     
 }
 
