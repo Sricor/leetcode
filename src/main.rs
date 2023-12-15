@@ -6,7 +6,7 @@ pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
 
     for (index, value) in nums.iter().enumerate() {
         let key = target - *value;
-        if let Some(index2) =  map.get(&key){
+        if let Some(index2) = map.get(&key) {
             return vec![*index2 as i32, index as i32];
         }
         map.insert(*value, index);
@@ -19,11 +19,13 @@ pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
 // 7, 0 ms, 1.91 MB
 pub fn reverse(x: i32) -> i32 {
     x.abs()
-    .to_string()
-    .chars().rev()
-    .collect::<String>()
-    .parse::<i32>()
-    .unwrap_or(0) * x.signum()
+        .to_string()
+        .chars()
+        .rev()
+        .collect::<String>()
+        .parse::<i32>()
+        .unwrap_or(0)
+        * x.signum()
 }
 
 // https://leetcode.cn/problems/palindrome-number/
@@ -46,17 +48,29 @@ pub fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
     let mut ret = Vec::new();
     nums.sort_unstable();
     for i in 0..nums.len() {
-        if nums[i] > 0 { break; }
-        if i > 0 && nums[i] == nums[i - 1] { continue; }
+        if nums[i] > 0 {
+            break;
+        }
+        if i > 0 && nums[i] == nums[i - 1] {
+            continue;
+        }
         let (mut l, mut r) = (i + 1, nums.len() - 1);
         while l < r {
             let sum = nums[i] + nums[l] + nums[r];
             if sum == 0 {
                 ret.push(vec![nums[i], nums[l], nums[r]]);
-                while r < nums.len() - 1 && nums[r] == nums[r - 1] { r -= 1; }
-                while l < nums.len() - 1 && nums[l] == nums[l + 1] { l += 1; }
+                while r < nums.len() - 1 && nums[r] == nums[r - 1] {
+                    r -= 1;
+                }
+                while l < nums.len() - 1 && nums[l] == nums[l + 1] {
+                    l += 1;
+                }
             }
-            if sum > 0 { r -= 1; } else { l += 1; }
+            if sum > 0 {
+                r -= 1;
+            } else {
+                l += 1;
+            }
         }
     }
     ret
@@ -94,15 +108,16 @@ pub fn merge(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
 pub fn generate(num_rows: i32) -> Vec<Vec<i32>> {
     let mut ans = Vec::new();
     if num_rows == 0 {
-        return ans
+        return ans;
     }
     ans.push(vec![1]);
     for index in 1..num_rows {
         let mut array = Vec::new();
-        array.resize(index as usize +1, 1 as i32);
+        array.resize(index as usize + 1, 1 as i32);
         array[index as usize] = 1;
         for j in 1..index {
-            array[j as usize] = ans[index as usize-1][j as usize-1] + ans[index as usize-1][j as usize];
+            array[j as usize] =
+                ans[index as usize - 1][j as usize - 1] + ans[index as usize - 1][j as usize];
         }
         ans.push(array);
     }
@@ -179,15 +194,17 @@ mod tests {
     #[test]
     fn test_generate() {
         assert_eq!(generate(2), vec![vec![1], vec![1, 1]]);
-        assert_eq!(generate(5), vec![
-            vec![1],
-            vec![1,1],
-            vec![1,2,1],
-            vec![1,3,3,1],
-            vec![1,4,6,4,1]
-        ]);
+        assert_eq!(
+            generate(5),
+            vec![
+                vec![1],
+                vec![1, 1],
+                vec![1, 2, 1],
+                vec![1, 3, 3, 1],
+                vec![1, 4, 6, 4, 1]
+            ]
+        );
     }
-    
 }
 
 fn main() {
